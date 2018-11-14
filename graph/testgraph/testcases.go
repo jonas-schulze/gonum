@@ -84,6 +84,15 @@ var testCases = []struct {
 	},
 
 	{
+		name:     "one - self loop",
+		nodes:    []graph.Node{node(0)},
+		edges:    []graph.WeightedLine{line{F: node(0), T: node(0), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-1), node(1)},
+		self:     0,
+		absent:   math.Inf(1),
+	},
+
+	{
 		name:     "two - positive",
 		nodes:    []graph.Node{node(1), node(2)},
 		edges:    []graph.WeightedLine{line{F: node(1), T: node(2), UID: 0, W: 0.5}},
@@ -168,6 +177,24 @@ var testCases = []struct {
 		absent:   math.Inf(1),
 	},
 	{
+		name: "4-clique+ - single(non-prepared)",
+		edges: func() []graph.WeightedLine {
+			n := 4
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
+			for i := 0; i < 4; i++ {
+				for j := i; j < 4; j++ {
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
+					uid++
+				}
+			}
+			return edges
+		}(),
+		nonexist: []graph.Node{node(-1), node(4)},
+		self:     0,
+		absent:   math.Inf(1),
+	},
+	{
 		name: "4-clique - single(prepared)",
 		nodes: func() []graph.Node {
 			n := 4
@@ -183,6 +210,32 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
+					uid++
+				}
+			}
+			return edges
+		}(),
+		nonexist: []graph.Node{node(-1), node(4)},
+		self:     0,
+		absent:   math.Inf(1),
+	},
+	{
+		name: "4-clique+ - single(prepared)",
+		nodes: func() []graph.Node {
+			n := 4
+			nodes := make([]graph.Node, n)
+			for i := range nodes {
+				nodes[i] = node(i)
+			}
+			return nodes
+		}(),
+		edges: func() []graph.WeightedLine {
+			n := 4
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
+			for i := 0; i < n; i++ {
+				for j := i; j < n; j++ {
 					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
 				}
@@ -215,6 +268,26 @@ var testCases = []struct {
 		absent:   math.Inf(1),
 	},
 	{
+		name: "4-clique+ - double(non-prepared)",
+		edges: func() []graph.WeightedLine {
+			n := 4
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, n*n-n)
+			for i := 0; i < n; i++ {
+				for j := i; j < n; j++ {
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
+					uid++
+					edges = append(edges, line{F: node(j), T: node(i), UID: uid, W: 0.5})
+					uid++
+				}
+			}
+			return edges
+		}(),
+		nonexist: []graph.Node{node(-1), node(4)},
+		self:     0,
+		absent:   math.Inf(1),
+	},
+	{
 		name: "4-clique - double(prepared)",
 		nodes: func() []graph.Node {
 			n := 4
@@ -230,6 +303,34 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, n*n-n)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
+					uid++
+					edges = append(edges, line{F: node(j), T: node(i), UID: uid, W: 0.5})
+					uid++
+				}
+			}
+			return edges
+		}(),
+		nonexist: []graph.Node{node(-1), node(4)},
+		self:     0,
+		absent:   math.Inf(1),
+	},
+	{
+		name: "4-clique+ - double(prepared)",
+		nodes: func() []graph.Node {
+			n := 4
+			nodes := make([]graph.Node, n)
+			for i := range nodes {
+				nodes[i] = node(i)
+			}
+			return nodes
+		}(),
+		edges: func() []graph.WeightedLine {
+			n := 4
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, n*n-n)
+			for i := 0; i < n; i++ {
+				for j := i; j < n; j++ {
 					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
 					edges = append(edges, line{F: node(j), T: node(i), UID: uid, W: 0.5})
