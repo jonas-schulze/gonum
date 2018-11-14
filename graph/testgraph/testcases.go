@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"gonum.org/v1/gonum/graph"
+	"gonum.org/v1/gonum/graph/multi"
 	"gonum.org/v1/gonum/graph/simple"
 )
 
@@ -21,7 +22,7 @@ var testCases = []struct {
 
 	// edges is the set of edges that should be used
 	// to construct the graph.
-	edges []graph.WeightedEdge
+	edges []graph.WeightedLine
 
 	// nonexist is a set of nodes that should not be
 	// found within the graph.
@@ -67,7 +68,7 @@ var testCases = []struct {
 	{
 		name:     "two - positive",
 		nodes:    []graph.Node{simple.Node(1), simple.Node(2)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(1), T: simple.Node(2), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(1), T: simple.Node(2), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(-1), simple.Node(0)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -75,7 +76,7 @@ var testCases = []struct {
 	{
 		name:     "two - negative",
 		nodes:    []graph.Node{simple.Node(-1), simple.Node(-2)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(-1), T: simple.Node(-2), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(-2), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(0), simple.Node(-2)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -83,7 +84,7 @@ var testCases = []struct {
 	{
 		name:     "two - zero spanning",
 		nodes:    []graph.Node{simple.Node(-1), simple.Node(1)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(-1), T: simple.Node(1), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(1), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(0), simple.Node(2)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -91,7 +92,7 @@ var testCases = []struct {
 	{
 		name:     "two - zero contiguous",
 		nodes:    []graph.Node{simple.Node(0), simple.Node(1)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(0), T: simple.Node(1), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(0), T: simple.Node(1), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(-1), simple.Node(2)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -100,7 +101,7 @@ var testCases = []struct {
 	{
 		name:     "three - positive",
 		nodes:    []graph.Node{simple.Node(1), simple.Node(2), simple.Node(3)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(1), T: simple.Node(2), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(1), T: simple.Node(2), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(-1), simple.Node(0)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -108,7 +109,7 @@ var testCases = []struct {
 	{
 		name:     "three - negative",
 		nodes:    []graph.Node{simple.Node(-1), simple.Node(-2), simple.Node(-3)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(-1), T: simple.Node(-2), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(-2), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(0), simple.Node(1)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -116,7 +117,7 @@ var testCases = []struct {
 	{
 		name:     "three - zero spanning",
 		nodes:    []graph.Node{simple.Node(-1), simple.Node(0), simple.Node(1)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(-1), T: simple.Node(1), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(1), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(-2), simple.Node(2)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -124,7 +125,7 @@ var testCases = []struct {
 	{
 		name:     "three - zero contiguous",
 		nodes:    []graph.Node{simple.Node(0), simple.Node(1), simple.Node(2)},
-		edges:    []graph.WeightedEdge{simple.WeightedEdge{F: simple.Node(0), T: simple.Node(1), W: 0.5}},
+		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(0), T: simple.Node(1), UID: 0, W: 0.5}},
 		nonexist: []graph.Node{simple.Node(-1), simple.Node(3)},
 		self:     0,
 		absent:   math.Inf(1),
@@ -132,12 +133,14 @@ var testCases = []struct {
 
 	{
 		name: "4-clique - single(non-prepared)",
-		edges: func() []graph.WeightedEdge {
+		edges: func() []graph.WeightedLine {
 			n := 4
-			edges := make([]graph.WeightedEdge, 0, (n*n-n)/2)
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
 			for i := 0; i < 4; i++ {
 				for j := i + 1; j < 4; j++ {
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(i), T: simple.Node(j), W: 0.5})
+					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					uid++
 				}
 			}
 			return edges
@@ -156,12 +159,14 @@ var testCases = []struct {
 			}
 			return nodes
 		}(),
-		edges: func() []graph.WeightedEdge {
+		edges: func() []graph.WeightedLine {
 			n := 4
-			edges := make([]graph.WeightedEdge, 0, (n*n-n)/2)
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(i), T: simple.Node(j), W: 0.5})
+					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					uid++
 				}
 			}
 			return edges
@@ -173,13 +178,16 @@ var testCases = []struct {
 
 	{
 		name: "4-clique - double(non-prepared)",
-		edges: func() []graph.WeightedEdge {
+		edges: func() []graph.WeightedLine {
 			n := 4
-			edges := make([]graph.WeightedEdge, 0, n*n-n)
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, n*n-n)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(i), T: simple.Node(j), W: 0.5})
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(j), T: simple.Node(i), W: 0.5})
+					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					uid++
+					edges = append(edges, multi.WeightedLine{F: simple.Node(j), T: simple.Node(i), UID: uid, W: 0.5})
+					uid++
 				}
 			}
 			return edges
@@ -198,13 +206,16 @@ var testCases = []struct {
 			}
 			return nodes
 		}(),
-		edges: func() []graph.WeightedEdge {
+		edges: func() []graph.WeightedLine {
 			n := 4
-			edges := make([]graph.WeightedEdge, 0, n*n-n)
+			var uid int64
+			edges := make([]graph.WeightedLine, 0, n*n-n)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(i), T: simple.Node(j), W: 0.5})
-					edges = append(edges, simple.WeightedEdge{F: simple.Node(j), T: simple.Node(i), W: 0.5})
+					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					uid++
+					edges = append(edges, multi.WeightedLine{F: simple.Node(j), T: simple.Node(i), UID: uid, W: 0.5})
+					uid++
 				}
 			}
 			return edges
