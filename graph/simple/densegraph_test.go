@@ -29,7 +29,7 @@ func isZeroContiguousSet(nodes []graph.Node) bool {
 	return true
 }
 
-func directedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedEdge, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func directedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedLine, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	if len(nodes) == 0 {
 		return
 	}
@@ -92,7 +92,7 @@ func TestDirectedMatrix(t *testing.T) {
 	})
 }
 
-func directedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedEdge, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func directedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedLine, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	if len(nodes) == 0 {
 		return
 	}
@@ -155,7 +155,7 @@ func TestDirectedMatrixFrom(t *testing.T) {
 	})
 }
 
-func undirectedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedEdge, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func undirectedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedLine, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	if len(nodes) == 0 {
 		return
 	}
@@ -218,7 +218,7 @@ func TestUnirectedMatrix(t *testing.T) {
 	})
 }
 
-func undirectedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedEdge, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func undirectedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedLine, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	if len(nodes) == 0 {
 		return
 	}

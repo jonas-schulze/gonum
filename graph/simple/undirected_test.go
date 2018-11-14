@@ -14,7 +14,7 @@ import (
 	"gonum.org/v1/gonum/graph/testgraph"
 )
 
-func undirectedBuilder(nodes []graph.Node, edges []graph.WeightedEdge, _, _ float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func undirectedBuilder(nodes []graph.Node, edges []graph.WeightedLine, _, _ float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	seen := make(set.Nodes)
 	ug := simple.NewUndirectedGraph()
 	for _, n := range nodes {
