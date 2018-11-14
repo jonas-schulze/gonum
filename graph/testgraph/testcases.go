@@ -8,9 +8,27 @@ import (
 	"math"
 
 	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/multi"
-	"gonum.org/v1/gonum/graph/simple"
 )
+
+// node is a graph.Node implementation that is not exported
+// so that other packages will not be aware of it's implementation.
+type node int64
+
+func (n node) ID() int64 { return int64(n) }
+
+// line is an extended graph.Edge implementation that is not exported
+// so that other packages will not be aware of its implementation. It
+// covers all the edge types exported by graph.
+type line struct {
+	F, T graph.Node
+	UID  int64
+	W    float64
+}
+
+func (e line) From() graph.Node { return e.F }
+func (e line) To() graph.Node   { return e.T }
+func (e line) ID() int64        { return e.UID }
+func (e line) Weight() float64  { return e.W }
 
 var testCases = []struct {
 	// name is the name of the test.
@@ -39,94 +57,94 @@ var testCases = []struct {
 }{
 	{
 		name:     "empty",
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(0), simple.Node(1)},
+		nonexist: []graph.Node{node(-1), node(0), node(1)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "one - negative",
-		nodes:    []graph.Node{simple.Node(-1)},
-		nonexist: []graph.Node{simple.Node(0), simple.Node(1)},
+		nodes:    []graph.Node{node(-1)},
+		nonexist: []graph.Node{node(0), node(1)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "one - zero",
-		nodes:    []graph.Node{simple.Node(0)},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(1)},
+		nodes:    []graph.Node{node(0)},
+		nonexist: []graph.Node{node(-1), node(1)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "one - positive",
-		nodes:    []graph.Node{simple.Node(1)},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(0)},
+		nodes:    []graph.Node{node(1)},
+		nonexist: []graph.Node{node(-1), node(0)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 
 	{
 		name:     "two - positive",
-		nodes:    []graph.Node{simple.Node(1), simple.Node(2)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(1), T: simple.Node(2), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(0)},
+		nodes:    []graph.Node{node(1), node(2)},
+		edges:    []graph.WeightedLine{line{F: node(1), T: node(2), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-1), node(0)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "two - negative",
-		nodes:    []graph.Node{simple.Node(-1), simple.Node(-2)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(-2), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(0), simple.Node(-2)},
+		nodes:    []graph.Node{node(-1), node(-2)},
+		edges:    []graph.WeightedLine{line{F: node(-1), T: node(-2), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(0), node(-2)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "two - zero spanning",
-		nodes:    []graph.Node{simple.Node(-1), simple.Node(1)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(1), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(0), simple.Node(2)},
+		nodes:    []graph.Node{node(-1), node(1)},
+		edges:    []graph.WeightedLine{line{F: node(-1), T: node(1), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(0), node(2)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "two - zero contiguous",
-		nodes:    []graph.Node{simple.Node(0), simple.Node(1)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(0), T: simple.Node(1), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(2)},
+		nodes:    []graph.Node{node(0), node(1)},
+		edges:    []graph.WeightedLine{line{F: node(0), T: node(1), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-1), node(2)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 
 	{
 		name:     "three - positive",
-		nodes:    []graph.Node{simple.Node(1), simple.Node(2), simple.Node(3)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(1), T: simple.Node(2), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(0)},
+		nodes:    []graph.Node{node(1), node(2), node(3)},
+		edges:    []graph.WeightedLine{line{F: node(1), T: node(2), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-1), node(0)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "three - negative",
-		nodes:    []graph.Node{simple.Node(-1), simple.Node(-2), simple.Node(-3)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(-2), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(0), simple.Node(1)},
+		nodes:    []graph.Node{node(-1), node(-2), node(-3)},
+		edges:    []graph.WeightedLine{line{F: node(-1), T: node(-2), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(0), node(1)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "three - zero spanning",
-		nodes:    []graph.Node{simple.Node(-1), simple.Node(0), simple.Node(1)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(-1), T: simple.Node(1), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(-2), simple.Node(2)},
+		nodes:    []graph.Node{node(-1), node(0), node(1)},
+		edges:    []graph.WeightedLine{line{F: node(-1), T: node(1), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-2), node(2)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
 	{
 		name:     "three - zero contiguous",
-		nodes:    []graph.Node{simple.Node(0), simple.Node(1), simple.Node(2)},
-		edges:    []graph.WeightedLine{multi.WeightedLine{F: simple.Node(0), T: simple.Node(1), UID: 0, W: 0.5}},
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(3)},
+		nodes:    []graph.Node{node(0), node(1), node(2)},
+		edges:    []graph.WeightedLine{line{F: node(0), T: node(1), UID: 0, W: 0.5}},
+		nonexist: []graph.Node{node(-1), node(3)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
@@ -139,13 +157,13 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
 			for i := 0; i < 4; i++ {
 				for j := i + 1; j < 4; j++ {
-					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
 				}
 			}
 			return edges
 		}(),
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(4)},
+		nonexist: []graph.Node{node(-1), node(4)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
@@ -155,7 +173,7 @@ var testCases = []struct {
 			n := 4
 			nodes := make([]graph.Node, n)
 			for i := range nodes {
-				nodes[i] = simple.Node(i)
+				nodes[i] = node(i)
 			}
 			return nodes
 		}(),
@@ -165,13 +183,13 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, (n*n-n)/2)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
 				}
 			}
 			return edges
 		}(),
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(4)},
+		nonexist: []graph.Node{node(-1), node(4)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
@@ -184,15 +202,15 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, n*n-n)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
-					edges = append(edges, multi.WeightedLine{F: simple.Node(j), T: simple.Node(i), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(j), T: node(i), UID: uid, W: 0.5})
 					uid++
 				}
 			}
 			return edges
 		}(),
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(4)},
+		nonexist: []graph.Node{node(-1), node(4)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
@@ -202,7 +220,7 @@ var testCases = []struct {
 			n := 4
 			nodes := make([]graph.Node, n)
 			for i := range nodes {
-				nodes[i] = simple.Node(i)
+				nodes[i] = node(i)
 			}
 			return nodes
 		}(),
@@ -212,15 +230,15 @@ var testCases = []struct {
 			edges := make([]graph.WeightedLine, 0, n*n-n)
 			for i := 0; i < n; i++ {
 				for j := i + 1; j < n; j++ {
-					edges = append(edges, multi.WeightedLine{F: simple.Node(i), T: simple.Node(j), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(i), T: node(j), UID: uid, W: 0.5})
 					uid++
-					edges = append(edges, multi.WeightedLine{F: simple.Node(j), T: simple.Node(i), UID: uid, W: 0.5})
+					edges = append(edges, line{F: node(j), T: node(i), UID: uid, W: 0.5})
 					uid++
 				}
 			}
 			return edges
 		}(),
-		nonexist: []graph.Node{simple.Node(-1), simple.Node(4)},
+		nonexist: []graph.Node{node(-1), node(4)},
 		self:     0,
 		absent:   math.Inf(1),
 	},
