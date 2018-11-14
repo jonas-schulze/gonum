@@ -42,12 +42,18 @@ func directedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedLine, self,
 		seen.Add(simple.Node(i))
 	}
 	for _, edge := range edges {
+		if edge.From().ID() == edge.To().ID() {
+			continue
+		}
 		if !seen.Has(edge.From()) || !seen.Has(edge.To()) {
 			continue
 		}
 		ce := simple.WeightedEdge{F: dg.Node(edge.From().ID()), T: dg.Node(edge.To().ID()), W: edge.Weight()}
 		e = append(e, ce)
 		dg.SetWeightedEdge(ce)
+	}
+	if len(e) == 0 && len(edges) != 0 {
+		return nil, nil, nil, math.NaN(), math.NaN(), false
 	}
 	n = make([]graph.Node, 0, len(seen))
 	for _, sn := range seen {
@@ -105,12 +111,18 @@ func directedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedLine, s
 		seen.Add(n)
 	}
 	for _, edge := range edges {
+		if edge.From().ID() == edge.To().ID() {
+			continue
+		}
 		if !seen.Has(edge.From()) || !seen.Has(edge.To()) {
 			continue
 		}
 		ce := simple.WeightedEdge{F: dg.Node(edge.From().ID()), T: dg.Node(edge.To().ID()), W: edge.Weight()}
 		e = append(e, ce)
 		dg.SetWeightedEdge(ce)
+	}
+	if len(e) == 0 && len(edges) != 0 {
+		return nil, nil, nil, math.NaN(), math.NaN(), false
 	}
 	n = make([]graph.Node, 0, len(seen))
 	for _, sn := range seen {
@@ -168,12 +180,18 @@ func undirectedMatrixBuilder(nodes []graph.Node, edges []graph.WeightedLine, sel
 		seen.Add(simple.Node(i))
 	}
 	for _, edge := range edges {
+		if edge.From().ID() == edge.To().ID() {
+			continue
+		}
 		if !seen.Has(edge.From()) || !seen.Has(edge.To()) {
 			continue
 		}
 		ce := simple.WeightedEdge{F: dg.Node(edge.From().ID()), T: dg.Node(edge.To().ID()), W: edge.Weight()}
 		e = append(e, ce)
 		dg.SetWeightedEdge(ce)
+	}
+	if len(e) == 0 && len(edges) != 0 {
+		return nil, nil, nil, math.NaN(), math.NaN(), false
 	}
 	n = make([]graph.Node, 0, len(seen))
 	for _, sn := range seen {
@@ -231,12 +249,18 @@ func undirectedMatrixFromBuilder(nodes []graph.Node, edges []graph.WeightedLine,
 		seen.Add(n)
 	}
 	for _, edge := range edges {
+		if edge.From().ID() == edge.To().ID() {
+			continue
+		}
 		if !seen.Has(edge.From()) || !seen.Has(edge.To()) {
 			continue
 		}
 		ce := simple.WeightedEdge{F: dg.Node(edge.From().ID()), T: dg.Node(edge.To().ID()), W: edge.Weight()}
 		e = append(e, ce)
 		dg.SetWeightedEdge(ce)
+	}
+	if len(e) == 0 && len(edges) != 0 {
+		return nil, nil, nil, math.NaN(), math.NaN(), false
 	}
 	n = make([]graph.Node, 0, len(seen))
 	for _, sn := range seen {

@@ -22,6 +22,9 @@ func directedBuilder(nodes []graph.Node, edges []graph.WeightedLine, _, _ float6
 		dg.AddNode(n)
 	}
 	for _, edge := range edges {
+		if edge.From().ID() == edge.To().ID() {
+			continue
+		}
 		f := dg.Node(edge.From().ID())
 		if f == nil {
 			f = edge.From()
@@ -35,6 +38,9 @@ func directedBuilder(nodes []graph.Node, edges []graph.WeightedLine, _, _ float6
 		seen.Add(ce.T)
 		e = append(e, ce)
 		dg.SetEdge(ce)
+	}
+	if len(e) == 0 && len(edges) != 0 {
+		return nil, nil, nil, math.NaN(), math.NaN(), false
 	}
 	if len(seen) != 0 {
 		n = make([]graph.Node, 0, len(seen))
