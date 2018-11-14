@@ -13,7 +13,7 @@ import (
 	"gonum.org/v1/gonum/graph/testgraph"
 )
 
-func weightedUndirectedBuilder(nodes []graph.Node, edges []graph.WeightedEdge, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
+func weightedUndirectedBuilder(nodes []graph.Node, edges []graph.WeightedLine, self, absent float64) (g graph.Graph, n []graph.Node, e []graph.Edge, s, a float64, ok bool) {
 	seen := make(set.Nodes)
 	ug := multi.NewWeightedUndirectedGraph()
 	ug.EdgeWeightFunc = func(l graph.WeightedLines) float64 {
@@ -42,7 +42,7 @@ func weightedUndirectedBuilder(nodes []graph.Node, edges []graph.WeightedEdge, s
 		if t == nil {
 			t = edge.To()
 		}
-		cl := multi.WeightedLine{F: f, T: t, UID: ug.NewWeightedLine(f, t, 0).ID(), W: edge.Weight()}
+		cl := multi.WeightedLine{F: f, T: t, UID: edge.ID(), W: edge.Weight()}
 		seen.Add(cl.F)
 		seen.Add(cl.T)
 		e = append(e, cl)
