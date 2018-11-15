@@ -21,7 +21,7 @@ import (
 
 // BUG(kortschak): Edge equality is tested in part with reflect.DeepEqual and
 // direct equality of weight values. This means that edges returned by graphs
-// must not contain NaN weights. Weights returned by the Weight method are
+// must not contain NaN values. Weights returned by the Weight method are
 // compared with NaN-awareness, so they may be NaN when there is no edge
 // associated with the Weight call.
 
